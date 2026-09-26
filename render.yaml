@@ -1,0 +1,15 @@
+﻿# Render Blueprint：仓库连上去之后会自动建一个 Web Service（免费套餐有休眠，第一次访问要等十几秒）
+services:
+  - type: web
+    name: royal-thief-room
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: echo "zero dependencies - nothing to build"
+    startCommand: node server.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: RT_ALLOW_ORIGIN
+        value: "*"

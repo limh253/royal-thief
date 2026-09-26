@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#2a1f14" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="王权窃贼" />
+<title>王权窃贼 · 手游版</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>♛</text></svg>" />
+<link rel="stylesheet" href="/web/styles.css" />
+<link rel="stylesheet" href="/web/mobile.css" />
+</head>
+<body>
+<div class="app">
+  <div id="fatal" class="fatal hidden"></div>
+
+  <header class="topbar">
+    <div class="brand"><span class="crest">♛</span><span class="title">王权窃贼</span></div>
+    <div class="phasebar" id="phasebar"></div>
+    <div class="controls">
+      <div class="seg" id="modeSeg">
+        <button data-mode="ai" class="on">人机</button>
+        <button data-mode="demo">观战</button>
+      </div>
+      <a id="btnDesk" class="ghost" href="/web/index.html">端游版</a>
+      <span class="seedline"><span id="seedLabel">种子</span> <span id="seed">–</span></span>
+      <button id="btnInvite" class="ghost hidden" title="复制邀请链接发给朋友">邀请</button>
+      <button id="btnRules" class="ghost">规则速览</button>
+      <button id="btnLog" class="ghost">战报</button>
+      <button id="btnNew" class="ghost">新开一局</button>
+      <button id="btnMenu" class="ghost primary">主界面</button>
+    </div>
+  </header>
+
+  <main class="board">
+    <section class="felt">
+      <div class="seat opp">
+        <div class="seathead">
+          <span class="avatar" id="avatarB">♚</span>
+          <span class="who" id="nameB">玩家 B</span>
+          <span class="tags" id="tagsB"></span>
+          <span class="handcount" id="countB">–</span>
+        </div>
+        <div class="hand" id="handB"></div>
+      </div>
+
+      <div class="arena" id="arena">
+        <div class="arenatitle" id="arenaTitle">判定区</div>
+        <div class="slots">
+          <div class="slot" id="slotA"></div>
+          <div class="vs">VS</div>
+          <div class="slot" id="slotB"></div>
+        </div>
+        <div class="verdict" id="verdict">双方同时暗置，翻开后结算</div>
+      </div>
+
+      <div class="seat me">
+        <div class="handrow">
+          <div class="turnbar" id="turnbar">等待开局…</div>
+          <div class="prompt" id="prompt"></div>
+        </div>
+        <div class="hand" id="handA"></div>
+        <div class="seathead">
+          <span class="avatar" id="avatarA">♔</span>
+          <span class="who" id="nameA">玩家 A</span>
+          <span class="tags" id="tagsA"></span>
+          <span class="handcount" id="countA">–</span>
+        </div>
+      </div>
+
+      <div class="pile corner deck" id="pileDeck">
+        <div class="pilecards" id="deckStack"></div>
+        <b class="pilecount" id="deckCount">?</b>
+        <span class="pilelabel">主牌堆</span>
+      </div>
+
+      <div class="pile corner discard" id="pileDiscard">
+        <div class="pilecards" id="discardStack"></div>
+        <b class="pilecount" id="discardCount">0</b>
+        <span class="pilelabel">弃牌堆</span>
+      </div>
+
+      <label class="chk corner opt" title="默认隐藏对手手牌数量（背水一战条款要求）"><input type="checkbox" id="chkCount" />对手手牌数</label>
+      <label class="chk corner opt2" title="显示主牌堆剩余张数（默认隐藏，勾选后显示）"><input type="checkbox" id="chkDeck" />牌堆张数</label>
+    </section>
+
+    <aside class="rail hidden" id="logPanel">
+      <div class="loghead"><b>战报 · 流程</b><span class="railbtns"><button class="ghost" id="btnRailRules">规则速览</button><button class="ghost" id="btnLogClose">收起</button></span></div>
+      <div class="tabs" id="tabs">
+        <button data-log="pub" class="on">公开信息</button>
+        <button data-log="priv">我的私有提示</button>
+      </div>
+      <div class="log" id="log"></div>
+    </aside>
+
+    <div class="popups" id="popups"></div>
+  </main>
+</div>
+
+<div class="banner" id="banner"><b id="bannerT"></b><i id="bannerS"></i></div>
+
+<div class="zoom hidden" id="zoom">
+  <div class="zoomcard" id="zoomCard"></div>
+  <div class="zoominfo" id="zoomInfo"></div>
+</div>
+
+<div class="peekbox hidden" id="peekbox">
+  <div class="pkhead" id="peekInfo"></div>
+  <div class="pkcard" id="peekCard"></div>
+</div>
+
+<div class="overlay hidden" id="overlay"><div class="ovcard" id="ovcard"></div></div>
+<div class="toast hidden" id="toast"></div>
+
+<script>
+/* 启动诊断（普通脚本，不依赖模块加载，所以模块挂掉时它仍能报错） */
+(function () {
+  var single = document.documentElement.hasAttribute('data-single-file');
+  function showFatal(title, detail) {
+    var box = document.getElementById('fatal');
+    if (!box) return;
+    box.classList.remove('hidden');
+    box.innerHTML = '<b>' + title + '</b>' + (detail ? '<div class="fatal-detail">' + detail + '</div>' : '');
+  }
+  window.__rtFatal = showFatal;
+  window.addEventListener('error', function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) {
+      showFatal('资源加载失败：' + (t.src || t.href),
+        '这个文件没能加载（通常是 404），界面因此不会渲染，也点不动。若地址栏是 http://localhost:8787/app.js 这类路径，说明打开的 HTML 位置不对：请改用 <code>http://localhost:8787/web/index.html</code>。');
+      return;
+    }
+    showFatal('界面脚本出错：' + (e.message || '未知错误'), '按 F12 打开控制台可看到完整堆栈。');
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    showFatal('界面脚本出错：' + ((r && r.message) || r), '按 F12 打开控制台可看到完整堆栈。');
+  });
+  if (location.protocol === 'file:' && !single) {
+    showFatal('你是直接双击打开 web/index.html 的（file:// 协议）',
+      '浏览器不允许 file:// 页面加载 ES 模块，所以牌桌不会渲染、按钮点不动。两个能玩的办法：<br>'
+      + '① 双击打开单文件版：<a href="../dist/王权窃贼-手游.html">../dist/王权窃贼.html</a>（免服务器，推荐）<br>'
+      + '② 在项目目录运行 <code>node server.mjs</code>，再访问 <code>http://localhost:8787/web/index.html</code>');
+  }
+  setTimeout(function () {
+    if (globalThis.__RT_BOOTED__) return;
+    showFatal('界面没有启动：引擎脚本（/web/app.js）没有加载成功',
+      '依次排查：<br>'
+      + '① 用 <code>http://localhost:8787/web/index.html</code> 打开（不要双击 html 文件）；<br>'
+      + '② 在项目目录运行 <code>node server.mjs</code> 后刷新；<br>'
+      + '③ 按 F12 看 Console 的红色报错，把它发给我。');
+  }, 2500);
+})();
+</script>
+<script type="module" src="/web/app.js"></script>
+<script type="module" src="/web/mobile.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+﻿# 免费套餐的云平台闲置会休眠，第一个玩家要等十几秒才连上。
+# 这个工作流每 10 分钟戳一下 /healthz，让它一直醒着（免费额度足够）。
+#
+# 用法：仓库 Settings → Secrets and variables → Actions → Variables
+#       新建一个变量 RT_SERVER = https://你的后端域名（不要结尾斜杠）
+# 没配这个变量时，工作流会自己跳过，不会报错。
+name: keepalive
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping room server
+        run: |
+          if [ -z "${{ vars.RT_SERVER }}" ]; then
+            echo "没有配置 RT_SERVER 变量，跳过"
+            exit 0
+          fi
+          curl -fsS --max-time 30 "${{ vars.RT_SERVER }}/healthz" && echo " 后端在线"

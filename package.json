@@ -1,0 +1,24 @@
+{
+  "name": "royal-thief",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "王权窃贼 (Royal Thief) 双人回合制卡牌博弈引擎（含邀请码联机后端）",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "web": "node server.mjs",
+    "test": "node --test",
+    "build": "node tools/build-single.mjs && node tools/build-site.mjs",
+    "build:single": "node tools/build-single.mjs",
+    "build:site": "node tools/build-site.mjs",
+    "sim": "node cli/simulate.js",
+    "play": "node cli/hotseat.js",
+    "deploy:csb": "node tools/build-site.mjs && node tools/deploy-csb.mjs"
+  },
+  "devDependencies": {
+    "lz-string": "^1.5.0"
+  }
+}

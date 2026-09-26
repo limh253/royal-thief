@@ -1,0 +1,21 @@
+﻿# fly.io 部署：fly launch --no-deploy（套用本文件）→ fly deploy
+app = "royal-thief-room"
+primary_region = "sin"
+
+[build]
+
+[env]
+  PORT = "8787"
+  RT_ALLOW_ORIGIN = "*"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  # 常驻不休眠（免费额度够一个小房间用；想省钱就把 auto_stop_machines 改成 true）
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

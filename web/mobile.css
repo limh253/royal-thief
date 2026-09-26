@@ -1,0 +1,328 @@
+/* 王权窃贼 · 手游版（触屏优先）
+   复用 styles.css 的牌面/判定/提示，只改版式与触控尺寸。
+   竖屏为默认布局，横屏在文件末尾另有一套紧凑规则。 */
+:root {
+  --m-card-w: 78px;
+  --m-card-h: 104px;
+  --card-h: 104px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+html, body {
+  height: 100%; overflow: hidden; overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+}
+body { touch-action: manipulation; }
+.app {
+  height: 100vh; height: 100dvh; min-height: 0;
+  padding-left: var(--safe-l); padding-right: var(--safe-r);
+}
+button, .chip, .mbtn, .card, .ghost, .seg button { touch-action: manipulation; }
+
+/* ---------------- 顶栏：压到两行 ---------------- */
+.topbar {
+  flex-wrap: wrap; gap: 5px 6px;
+  padding: calc(var(--safe-t) + 6px) 9px 6px;
+}
+.brand { flex: 0 0 auto; gap: 5px; }
+.brand .crest { font-size: 17px; }
+.brand .title { font-size: 15px; letter-spacing: 2px; }
+.phasebar { order: 3; flex: 1 1 100%; margin: 0; overflow-x: auto; scrollbar-width: none; }
+.phasebar::-webkit-scrollbar { display: none; }
+.ph { font-size: 10.5px; padding: 3px 8px; }
+.controls { flex: 1 1 auto; gap: 5px; flex-wrap: nowrap; justify-content: flex-end; overflow-x: auto; scrollbar-width: none; }
+.controls::-webkit-scrollbar { display: none; }
+.controls .seedline, .controls .chk { display: none; }
+.controls #btnNew, .controls #btnLog { display: none; }
+.ghost, .seg button { font-size: 11.5px; padding: 5px 8px; }
+
+/* ---------------- 牌桌 ---------------- */
+.board { padding: 6px 8px calc(var(--safe-b) + 6px); gap: 4px; }
+.seat { gap: 3px; }
+.seathead { font-size: 11.5px; gap: 6px; }
+.seathead .avatar { width: 22px; height: 22px; font-size: 12px; }
+.hand {
+  --card-w: var(--m-card-w); --card-h: var(--m-card-h);
+  flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+  gap: 6px; padding: 14px 2px 4px; min-height: calc(var(--m-card-h) + 20px);
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.hand::-webkit-scrollbar { display: none; }
+.hand .card { flex: 0 0 auto; }
+.hand .stackmany { flex: 0 0 auto; }
+.table { grid-template-columns: auto auto auto; column-gap: 8px; gap: 4px; padding: 0; }
+.pilecards { width: 44px; height: 54px; --card-w: 44px; --card-h: 54px; }
+.pilelabel { font-size: 9.5px; letter-spacing: 1px; }
+.pilecount { font-size: 11px; min-width: 26px; padding: 0 6px; }
+.table::before { width: 94vw; height: min(400px, 54vh); }
+
+/* 判定区：铺满可用宽度，牌适中 */
+.arena.battle { width: 100%; gap: 7px; }
+.arena.battle .arenatitle { font-size: 10.5px; letter-spacing: 2px; }
+.arena.battle .slots { gap: 14px; }
+.arena.battle .slot { min-height: 0; gap: 6px; }
+.arena.battle .slot .card { --card-w: 82px; --card-h: 98px; border-radius: 10px; }
+.arena.battle .slot .card + .card { margin-left: -22px; }
+.arena.battle .slot .card .plate b { font-size: 11px; }
+.arena.battle .slot .card .plate i { font-size: 9px; }
+.arena.battle .slot .card .corner { font-size: 10px; }
+.arena.battle .vs { font-size: 17px; letter-spacing: 2px; }
+.arena.battle .vs::before { width: 74px; height: 74px; }
+.arena.battle .badge { font-size: 11px; padding: 2px 9px; }
+.table:has(.arena.battle)::before { width: 96vw; height: min(420px, 56vh); }
+.slot .card { --card-w: 58px; --card-h: 70px; }
+.slot .side .card { --card-w: 70px; --card-h: 84px; }
+.slot .side .hint { font-size: 10px; max-width: 150px; }
+.verdict, .btl, .btl-seg { font-size: 11.5px; }
+.btl-seg .btl-body { line-height: 1.5; }
+
+/* ---------------- 提示：贴在手上方，整块可读 ---------------- */
+.prompt.dock {
+  bottom: calc(var(--safe-b) + var(--card-h) + 56px);
+  width: min(600px, 95vw); max-width: 95vw; max-height: 44vh; overflow-y: auto;
+  padding: 11px 14px 12px; gap: 7px; border-radius: 14px;
+}
+.prompt.dock .askt b { font-size: 20px; letter-spacing: 3px; }
+.prompt.dock .askt i { font-size: 11px; letter-spacing: 1px; line-height: 1.45; }
+.prompt.dock .askt::after { width: 72%; }
+.prompt.dock button.act { font-size: 14px; padding: 11px 16px; min-height: 44px; flex: 1 1 auto; }
+.prompt.dock .chip { font-size: 12.5px; padding: 8px 11px; min-height: 38px; display: inline-flex; align-items: center; }
+.prompt.dock .hint { font-size: 11px; }
+.pickwrap { padding: 8px 8px 6px; }
+.pickwrap .pickhint { font-size: 10px; max-width: 130px; }
+
+/* ---------------- 横幅 / 放大 / 窥探 ---------------- */
+.banner { top: 13%; }
+.banner b { font-size: 22px; letter-spacing: 5px; }
+.banner[data-kind="turn"] b { font-size: 24px; letter-spacing: 6px; }
+.banner i { font-size: 11px; letter-spacing: 2px; }
+.zoom {
+  left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important;
+  flex-direction: column; align-items: center; max-width: 94vw;
+}
+.zoom.show { transform: translate(-50%, -50%) !important; }
+.zoominfo { width: min(340px, 90vw); }
+.zoomcard .card { --card-w: 132px; --card-h: 156px; }
+.peekbox { top: 12%; max-width: 94vw; padding: 12px 14px; gap: 10px; }
+.peekbox .pkhead { max-width: 168px; }
+.peekbox .pkcard .card { --card-w: 84px; --card-h: 100px; }
+
+/* ---------------- 弹窗（含主界面） ---------------- */
+.ovcard { width: min(680px, 95vw); max-height: 90vh; padding: 18px 15px; border-radius: 16px; }
+.ovcard h2 { font-size: 19px; letter-spacing: 2px; }
+.ovcard .hands .card { --card-w: 54px; --card-h: 64px; }
+.ovcard:has(.menu) { width: min(680px, 96vw); max-height: 94vh; padding: 20px 16px 18px; }
+.menu .mcrest { font-size: 38px; }
+.menu .mtitle { font-size: 34px; letter-spacing: 8px; text-indent: 8px; }
+.menu .msub { font-size: 11px; letter-spacing: 6px; text-indent: 6px; }
+.menu .mtag { font-size: 11.5px; }
+.menu .mp { font-size: 12.5px; line-height: 1.85; }
+.mmodes { flex-direction: column; gap: 9px; }
+.mbtn { max-width: none; flex: 0 0 auto; padding: 13px 14px; }
+.mbtn b { font-size: 15px; }
+.mkeys { flex-direction: column; gap: 6px; }
+.mkeys span { font-size: 11px; }
+.menu button.act.big { font-size: 15px; padding: 12px 22px; width: 100%; }
+.rules-doc { font-size: 12.5px; }
+.logpanel { width: 100vw; top: calc(var(--safe-t) + 44px); }
+.toast { top: calc(var(--safe-t) + 52px); font-size: 12.5px; max-width: 92vw; }
+
+/* 触屏没有 hover：别让牌在点击后卡在抬起状态 */
+@media (hover: none) {
+  .card:hover { transform: none; }
+  .card.playable:hover { transform: none; }
+  .pickwrap:hover { transform: none; filter: grayscale(.3) brightness(.86) contrast(.98); }
+  .chip:hover, button.act:hover:not(:disabled), .mbtn:hover { transform: none; }
+  .card.picking { transform: translateY(-10px); }
+}
+
+/* ---------------- 横屏：左侧看牌桌，右侧是操作面板 ---------------- */
+@media (orientation: landscape) and (max-height: 620px) {
+  :root { --card-h: 74px; }
+  .topbar { padding-top: calc(var(--safe-t) + 2px); padding-bottom: 2px; gap: 3px 5px; }
+  .brand .title { font-size: 12.5px; }
+  .ph { font-size: 9px; padding: 2px 6px; }
+  .board {
+    padding: 3px calc(348px + var(--safe-r)) 3px calc(8px + var(--safe-l));
+    gap: 2px;
+  }
+  .hand { --m-card-w: 54px; --m-card-h: 68px; gap: 4px; padding: 6px 2px 2px; min-height: calc(var(--m-card-h) + 10px); }
+  .seathead { font-size: 10.5px; gap: 5px; }
+  .seathead .avatar { width: 18px; height: 18px; font-size: 10px; }
+  .pilecards { width: 30px; height: 38px; --card-w: 30px; --card-h: 38px; }
+  .pilelabel { font-size: 8.5px; letter-spacing: .5px; }
+  .pilecount { font-size: 10px; min-width: 22px; }
+  .arena.battle .arenaTitle, .arena .arenatitle { font-size: 9.5px; letter-spacing: 1px; }
+  .arena.battle .slot .card { --card-w: 60px; --card-h: 72px; }
+  .arena.battle .slot .card + .card { margin-left: -16px; }
+  .arena.battle .slot .card .plate b { font-size: 9.5px; }
+  .arena.battle .slot .card .plate i { font-size: 7.5px; }
+  .arena.battle .slot .card .corner { font-size: 9px; }
+  .arena.battle .vs { font-size: 13px; letter-spacing: 1px; }
+  .arena.battle .vs::before { width: 50px; height: 50px; }
+  .arena.battle .badge { font-size: 10px; padding: 1px 7px; }
+  .slot .card { --card-w: 46px; --card-h: 56px; }
+  .slot .side .card { --card-w: 56px; --card-h: 68px; }
+  .table:has(.arena.battle)::before { width: 60vw; height: 92vh; }
+  .table { column-gap: 6px; }
+  .verdict, .btl, .btl-seg { font-size: 10.5px; }
+
+  /* 提示挪到右侧竖排面板 */
+  .prompt.dock {
+    left: auto; right: calc(var(--safe-r) + 8px); transform: none;
+    top: calc(var(--safe-t) + 46px); bottom: calc(var(--safe-b) + 6px);
+    width: min(330px, 40vw); max-width: 40vw; max-height: none;
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch;
+    overflow-y: auto; gap: 7px; justify-content: flex-start; align-content: flex-start;
+    padding: 10px 12px; border-radius: 14px;
+  }
+  .prompt.dock .askt { flex: 0 0 auto; align-items: flex-start; text-align: left; }
+  .prompt.dock .askt b { font-size: 16px; letter-spacing: 1px; line-height: 1.35; }
+  .prompt.dock .askt i { font-size: 10.5px; letter-spacing: 0; }
+  .prompt.dock .askt::after { width: 100%; }
+  .prompt.dock button.act { min-height: 36px; font-size: 12.5px; padding: 7px 12px; flex: 0 0 auto; width: 100%; }
+  .prompt.dock .chip { min-height: 30px; font-size: 11.5px; padding: 5px 9px; }
+  .prompt.dock .hint { font-size: 10.5px; }
+  .prompt.dock .plabel { font-size: 10.5px; }
+  .pickwrap { padding: 4px 6px; }
+  .pickwrap .pickhint { font-size: 9.5px; max-width: 92px; }
+  .banner { top: 34%; }
+  .banner b { font-size: 18px; letter-spacing: 3px; }
+  .banner[data-kind="turn"] b { font-size: 19px; letter-spacing: 3px; }
+  .banner i { font-size: 10px; letter-spacing: 1px; }
+  .ovcard:has(.menu) { width: min(700px, 92vw); padding: 14px 16px; }
+  .menu .mtitle { font-size: 26px; letter-spacing: 6px; text-indent: 6px; }
+  .menu .mcrest { font-size: 26px; }
+  .menu .mp { font-size: 11.5px; line-height: 1.7; }
+  .mmodes { flex-direction: row; gap: 8px; }
+  .mbtn { flex: 1 1 150px; padding: 9px 10px; }
+  .mbtn b { font-size: 13px; }
+  .mbtn small { font-size: 10px; }
+  .mkeys { flex-direction: row; gap: 6px; }
+  .zoomcard .card { --card-w: 108px; --card-h: 128px; }
+  .zoominfo { width: min(300px, 60vw); }
+  .peekbox { top: 8%; }
+  .toast { left: 34%; top: calc(var(--safe-t) + 6px); max-width: 52vw; }
+}
+/* 竖屏：牌堆缩到最小，判定区多留横向空间；横幅下移到手牌背那条 */
+@media (orientation: portrait) {
+  .pilecards { width: 30px; height: 37px; --card-w: 30px; --card-h: 37px; }
+  .pilelabel { display: none; }
+  .pilecount { font-size: 10px; min-width: 22px; padding: 0 5px; }
+  .arena.battle .badge { font-size: 10px; padding: 1px 7px; }
+  .arena.battle .slot .side .hint { font-size: 9.5px; max-width: 104px; }
+  .banner { top: 30%; }
+}
+
+/* 手游版：联机面板压窄一点 */
+.monline { padding: 12px 12px; margin: 14px 0 4px; }
+.monline .molrow { gap: 7px; }
+.monline .molinput { width: 84px; letter-spacing: 3px; font-size: 14px; }
+.monline .mollink { font-size: 10px; }
+
+/* ================= v4 手游版：适配新的「判定区 + 右侧战报 + 桌面弹窗」结构 ================= */
+.board {
+  display: block; padding: 4px 6px calc(var(--safe-b) + 6px);
+}
+.felt {
+  height: 100%; padding: 6px 8px 4px; border-radius: 14px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.felt::before { width: min(78vw, 52vh); }
+.topbar { flex-wrap: wrap; row-gap: 4px; }
+.controls #btnLog { display: inline-flex; }   /* 手机版战报靠它开关 */
+.controls { flex-wrap: wrap; }
+
+/* 右侧战报：手机上变成从右滑入的浮层 */
+.rail {
+  position: absolute; right: 6px; top: 58px; bottom: calc(var(--safe-b) + 8px);
+  width: min(272px, 86vw); z-index: 60;
+  box-shadow: -14px 0 40px rgba(0, 0, 0, .7);
+}
+.rail:not(.hidden) { animation: railIn .22s ease; }
+@keyframes railIn { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
+.rail .loghead { font-size: 11.5px; padding-bottom: 6px; }
+.rail .log { font-size: 11.5px; }
+
+/* 角上的牌堆：手机上收得更小，避免挡判定区 */
+.pile.corner { padding: 4px 6px 3px; border-radius: 10px; }
+.pile.corner .pilecards { width: 30px; height: 36px; }
+.pile.corner .pilelabel { font-size: 8.5px; }
+.pile.corner .pilecount { font-size: 9.5px; padding: 0 4px; }
+.pile.corner.deck { top: 4px; right: 6px; }
+.pile.corner.discard { top: 76px; right: 6px; }
+.chk.corner.opt, .chk.corner.opt2 { display: none; }
+
+/* 手牌上方：回合状态左、操作按钮右 */
+.handrow { min-height: 26px; gap: 6px; padding: 0 2px; }
+.turnbar { font-size: 11px; padding: 3px 10px; }
+.prompt { max-width: 68%; gap: 6px; }
+.prompt.dock { max-width: 68%; }
+.prompt.dock .askt { flex-direction: column; align-items: flex-end; }
+.prompt.dock .askt b { font-size: 14px; letter-spacing: 1px; }
+.prompt.dock .askt i { font-size: 10px; }
+.prompt.dock button.act { font-size: 12.5px; padding: 8px 12px; min-height: 38px; }
+.prompt.dock .chip { font-size: 12px; padding: 7px 10px; min-height: 34px; }
+.prompt.dock .hint { font-size: 10.5px; padding: 4px 9px; }
+
+/* 桌面弹窗：小屏更收敛 */
+.popups { padding-top: 4.5%; }
+.popup { min-width: 0; max-width: 84%; padding: 7px 16px; border-radius: 11px; }
+.popup b { font-size: 17px; letter-spacing: 3px; }
+.popup i { font-size: 10.5px; }
+
+/* 判定区：手机上也要够大 */
+.arena { gap: 6px; }
+.arena.battle { width: 100%; }
+.arena.battle .slot .card { --card-w: 96px; --card-h: 113px; border-radius: 11px; }
+.arena.battle .slots { gap: 20px; }
+.arena.battle .verdict { font-size: 12px; }
+
+/* 主界面：手机竖屏单列 */
+.ovcard:has(.menu) { width: 96vw; padding: 16px 14px 12px; }
+.menu .mtitle { font-size: 34px; letter-spacing: 9px; text-indent: 9px; }
+.menu .mcrest { font-size: 38px; }
+.menu .msub { letter-spacing: 7px; text-indent: 7px; font-size: 10.5px; }
+.menu .mmodes { grid-template-columns: 1fr 1fr; gap: 8px; }
+.menu .mbtn { padding: 11px 12px; }
+.menu .mbtn b { font-size: 15.5px; letter-spacing: 2px; }
+.menu .mbtn small { font-size: 10.5px; }
+.menu .mbtn .mnote { font-size: 9.5px; }
+.menu .mkeys span { font-size: 10.5px; padding: 3px 10px; }
+.menu .mtag { font-size: 11.5px; }
+
+@media (orientation: landscape) {
+  .board { display: block; }
+  .felt { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .arena.battle .slot .card { --card-w: 118px; --card-h: 138px; }
+  .rail { top: 46px; }
+  .menu .mmodes { grid-template-columns: repeat(4, 1fr); }
+}
+
+
+/* 手游版顶栏：一行放得下，阶段条单独一行，次要按钮收起来 */
+.topbar { flex-wrap: wrap; row-gap: 3px; padding: 5px 8px; }
+.brand { flex: 0 0 auto; }
+.phasebar { order: 3; flex: 1 1 100%; margin: 0; }
+.controls { flex: 1 1 auto; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-end; gap: 4px; }
+.controls #btnDesk, .controls #btnRules { display: none; }
+.banner { top: 12% !important; }
+.banner b { font-size: 20px; letter-spacing: 4px; }
+.popups { padding-top: 7%; }
+
+/* 手机上手牌小一点，判定区才有空间 */
+.hand { --card-w: 66px; --card-h: 86px; }
+.pile.corner .pilecount { right: 2px; top: 2px; }
+.pile.corner.deck { top: 5px; right: 5px; }
+.pile.corner.discard { top: 72px; right: 5px; }
+
+/* v5：提示浮层贴到牌桌顶部，小屏也以牌桌为中心 */
+.popups { top: 46px !important; left: 4px !important; right: 4px !important; bottom: auto !important; padding-top: 0 !important; }
+.popup b { white-space: normal; }
+.railbtns .ghost { font-size: 10px; padding: 3px 7px; }
+
+/* v5：右侧栏再收窄；提示条别压顶栏和桌面弹窗，挪到手牌上方 */
+.rail { width: min(240px, 76vw); }
+.toast { top: auto !important; bottom: calc(var(--safe-b) + 118px) !important; max-width: 88vw; }
