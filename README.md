@@ -3,6 +3,20 @@
 双人回合制卡牌博弈《王权窃贼》的可运行规则引擎、边界测试与热座对战 CLI。
 零依赖（Node ≥ 20，使用内置 `node --test`），不需要 `npm install`。
 
+## 在线玩（任何人点开就能玩）
+
+- 端游版：<https://limh253.github.io/royal-thief/>
+- 手游版：<https://limh253.github.io/royal-thief/mobile.html>
+
+托管在 GitHub Pages（免费、永久在线，不用自己开服务器）。**单机**打开就玩；**双人**在主界面点「联机对战」→「创建房间」拿 4 位邀请码 → 把链接发给朋友即可，**不需要任何后端**（房主浏览器就是服务器，两人通过公共 MQTT 中继转消息，只转发不存牌局）。
+想换成自建后端（server.mjs）也可以：主界面里填后端地址，前后端不需要同域。
+
+改完代码重新发布（链接不变）：
+
+    node tools/build-site.mjs && node tools/deploy-pages.mjs
+
+完整说明见 `docs/部署与联机.md`（两条联机通路的区别、Cloudflare Pages / Railway / Render / Fly、排错）。
+
 ## 运行（网页界面）
 
     node server.mjs                # 启动后浏览器打开 http://localhost:8787/ （或 /web/index.html）
@@ -11,6 +25,10 @@
     node cli/hotseat.js 1          # 热座对战（参数为随机种子）
     node cli/simulate.js --seed=1  # 用固定种子回放一整局（只打印公开信息）
     node cli/simulate.js --games=2000 --fight=0.65   # 批量自动对局，输出终局原因分布
+    node tools/build-site.mjs      # 打包成可直接丢静态托管的 dist/site/（index.html + mobile.html + vendor/）
+    node tools/deploy-pages.mjs    # 发到 GitHub Pages（别人点链接就能玩）
+    node tools/serve-site.mjs      # 本地模拟静态托管（验证前后端分离）
+    node tools/e2e-relay.mjs       # 免后端联机端到端（两个真浏览器 + 公共中继）
 
 ## 网页界面（web/）
 

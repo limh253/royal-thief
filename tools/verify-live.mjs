@@ -123,7 +123,10 @@ await p1.ev(`document.querySelector('[data-act="online-create"]').click()`);
 let code = '';
 for (let i = 0; i < 160; i++) { await sleep(250); code = await p1.ev(`(document.getElementById('seed')?.textContent ?? '').trim()`); if (/^[A-Z0-9]{4}$/.test(code)) break; }
 ok(/^[A-Z0-9]{4}$/.test(code), '线上免服务器建房成功，拿到邀请码', code);
-ok(await p1.ev(`Boolean(globalThis.mqtt && globalThis.mqtt.connect)`), '中继客户端从站点本地加载成功');
+// 中继客户端是「点联机时才按需加载」的，等它出现（正常 1 秒内）
+let mqttOk = false;
+for (let i = 0; i < 40; i++) { mqttOk = await p1.ev('Boolean(globalThis.mqtt && globalThis.mqtt.connect)'); if (mqttOk) break; await sleep(500); }
+ok(mqttOk, '中继客户端从站点本地加载成功');
 await p1.shot('03-房主等待');
 
 const link = BASE + '?room=' + code + '&relay=1';
